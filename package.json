@@ -1,0 +1,30 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "Nodejs Express Api",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo 'Test is passing.'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TinkeringAround/API.git"
+  },
+  "keywords": [
+    "Nodejs",
+    "api",
+    "rest"
+  ],
+  "author": "Thomas Maier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TinkeringAround/API/issues"
+  },
+  "homepage": "https://github.com/TinkeringAround/API#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.9"
+  }
+}
