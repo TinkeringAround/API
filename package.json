@@ -4,7 +4,11 @@
   "description": "Nodejs Express Api",
   "main": "index.js",
   "scripts": {
+    "build": "docker build -t tinkeringaround/api:latest .",
+    "predeploy": "npm run build",
+    "deploy": "docker push tinkeringaround/api:latest",
     "start": "nodemon server.js",
+    "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api:latest",
     "test": "echo 'Test is passing.'"
   },
   "repository": {
@@ -24,7 +28,9 @@
   "homepage": "https://github.com/TinkeringAround/API#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "morgan": "^1.9.1",
+    "morgan": "^1.9.1"
+  },
+  "devDependencies": {
     "nodemon": "^1.18.9"
   }
 }
