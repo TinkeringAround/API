@@ -3,9 +3,7 @@ language: node_js
 services:
   - docker
 
-before_deploy:
+script:
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
   - docker build -t tinkeringaround/api .
-
-deploy:
   - docker push tinkeringaround/api:latest
