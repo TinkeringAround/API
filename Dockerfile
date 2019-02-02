@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:alpine
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 3000
 
 # Start server
-CMD [ "npm" , "start" ]
+CMD [ "node" , "server.js" ]
