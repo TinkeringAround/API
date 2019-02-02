@@ -5,6 +5,7 @@ stages:
       dockerfilePath: ./Dockerfile
       buildContext: .
       tag: tinkeringaround/api
+      registry: 127.0.0.1:34876
 - name: Deploy
   steps:
   - applyYamlConfig:
