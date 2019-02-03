@@ -6,6 +6,7 @@
   "scripts": {
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
     "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api",
+    "deploy": "kubectl create --kubeconfig='api-cluster-kubeconfig.yaml' -f service.yaml && kubectl --kubeconfig='api-cluster-kubeconfig.yaml' create -f deployment.yaml",
     "start": "nodemon server.js",
     "test": "echo 'Test is passing.'"
   },
