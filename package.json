@@ -4,8 +4,8 @@
   "description": "Nodejs Express REST API",
   "main": "server.js",
   "scripts": {
-    "build": "docker build -t api .",
-    "container": "npm run build && docker container run --name api --rm -p 3000:3000 api",
+    "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
+    "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api",
     "start": "nodemon server.js",
     "test": "echo 'Test is passing.'"
   },
