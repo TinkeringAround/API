@@ -6,16 +6,15 @@
   "scripts": {
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
     "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api",
-    "deploy": "kubectl create --kubeconfig='api-cluster-kubeconfig.yaml' -f service.yaml && kubectl --kubeconfig='api-cluster-kubeconfig.yaml' create -f deployment.yaml",
     "start": "nodemon server.js",
-    "test": "echo 'Test is passing.'"
+    "test": "jest --watchAll"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TinkeringAround/API.git"
   },
   "keywords": [
-    "Nodejs",
+    "node",
     "api",
     "rest"
   ],
@@ -30,6 +29,8 @@
     "morgan": "^1.9.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "jest": "^24.0.0",
+    "nodemon": "^1.18.9",
+    "supertest": "^3.4.2"
   }
 }
