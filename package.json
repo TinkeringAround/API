@@ -7,7 +7,8 @@
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
     "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api",
     "start": "nodemon server.js",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "travis": "jest"
   },
   "repository": {
     "type": "git",
