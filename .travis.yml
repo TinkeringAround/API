@@ -6,7 +6,7 @@ services:
   - docker
 
 script:
-  - npm run travis
+  - npm run test
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
   - docker build -t tinkeringaround/api:latest .
   - docker push tinkeringaround/api:latest
