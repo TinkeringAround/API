@@ -1,10 +1,18 @@
 stages:
-- name: Build Image
+- name: Testing
+  steps:
+  - runScriptConfig:
+      image: node:latest
+      shellScript: |-
+        npm install
+        npm run travis
+- name: Deploy Container
   steps:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile
       buildContext: .
       tag: tinkeringaround/api
+      registry: 127.0.0.1:34163
 - name: Deploy Container
   steps:
   - applyYamlConfig:
