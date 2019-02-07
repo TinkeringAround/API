@@ -1,12 +1,41 @@
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: myapi
+  labels:
+    run: app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3000
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: app
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapi
 spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: myapi
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
   selector:
     matchLabels:
       app: myapi
-  replicas: 2 # tells deployment to run 2 pods matching the template
+  replicas: 3
   template:
     metadata:
       labels:
@@ -17,3 +46,6 @@ spec:
         image: tinkeringaround/api
         ports:
         - containerPort: 3000
+---
+
+
