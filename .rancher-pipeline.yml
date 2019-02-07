@@ -3,9 +3,7 @@ stages:
   steps:
   - runScriptConfig:
       image: node:latest
-      shellScript: |-
-        npm install
-        npm run travis
+      shellScript: npm run travis
 - name: Build Image
   steps:
   - publishImageConfig:
