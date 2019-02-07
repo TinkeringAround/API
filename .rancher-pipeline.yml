@@ -4,9 +4,6 @@ stages:
   - runScriptConfig:
       image: node:latest
       shellScript: |-
-        ls
-        node -v
-        npm -v
         npm install
         npm run travis
 - name: Build Image
