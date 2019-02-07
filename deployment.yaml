@@ -7,6 +7,8 @@ spec:
     matchLabels:
       app: myapi
   replicas: 3
+  strategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -17,4 +19,26 @@ spec:
         image: tinkeringaround/api
         ports:
         - containerPort: 3000
+        protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+      
 ---
