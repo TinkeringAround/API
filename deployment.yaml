@@ -1,23 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: api-deplyoment
+  name: nginx-deployment
 spec:
-  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
   template:
     metadata:
       labels:
-        name: api
+        app: nginx
     spec:
       containers:
-      - name: api
-        image: tinkeringaround/api
+      - name: nginx
+        image: nginx:1.7.9
         ports:
-          - containerPort: 3000
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 60
-          timeoutSeconds: 10
-
+        - containerPort: 80
