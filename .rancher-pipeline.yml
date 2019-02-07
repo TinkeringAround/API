@@ -4,8 +4,10 @@ stages:
   - runScriptConfig:
       image: node:latest
       shellScript: |-
-            ls
-- name: Deploy Container
+        ls
+        node -v
+        npm -v
+- name: Build Image
   steps:
   - publishImageConfig:
       dockerfilePath: ./Dockerfile
