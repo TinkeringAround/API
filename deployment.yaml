@@ -1,19 +1,19 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: myapi
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: myapi
   replicas: 2 # tells deployment to run 2 pods matching the template
   template:
     metadata:
       labels:
-        app: nginx
+        app: myapi
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.7.9
+      - name: myapi
+        image: tinkeringaround/api
         ports:
-        - containerPort: 80
+        - containerPort: 3000
