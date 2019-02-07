@@ -1,20 +1,4 @@
 apiVersion: apps/v1
-kind: Service
-metadata:
-  name: myapi
-  labels:
-    run: app
-spec:
-  type: ClusterIP
-  ports:
-  - port: 3000
-    targetPort: 80
-    protocol: TCP
-    name: http
-  selector:
-    app: app
----
-apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapi
@@ -34,5 +18,3 @@ spec:
         ports:
         - containerPort: 3000
 ---
-
-
