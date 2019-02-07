@@ -10,7 +10,8 @@ app.use((req, res, next) => {
     res.status(200).json({
         message: "It works!",
         date: new Date().toISOString(),
-        author: "Thomas Maier"
+        author: "Thomas Maier",
+        port: "3000"
     });
 });
 
