@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api-deplyoment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: api
+    spec:
+      containers:
+      - name: api
+        image: tinkeringaround/api
+        ports:
+          - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+
