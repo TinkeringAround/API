@@ -1,20 +1,20 @@
 stages:
-  - name: Testing
-    steps:
-      - runScriptConfig:
-          image: node:latest
-          shellScript: |-
-            npm install
-            npm run travis
-  - name: Build Image
-    steps:
-      - publishImageConfig:
-          dockerfilePath: ./Dockerfile
-          buildContext: .
-          tag: tinkeringaround/api:latest
-          registry: 127.0.0.1:34163
-  - name: Deploy Container
-    steps:
-      - applyYamlConfig:
-          path: ./deployment.yaml
+- name: Testing
+  steps:
+  - runScriptConfig:
+      image: node:latest
+      shellScript: |-
+        npm install
+        npm run travis
+- name: Build Image
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: tinkeringaround/api:latest
+      registry: 127.0.0.1:34163
+- name: Deploy Container
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
 timeout: 5
