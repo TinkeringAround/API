@@ -4,8 +4,7 @@ stages:
   - runScriptConfig:
       image: node:latest
       shellScript: |-
-        npm install
-        npm run travis
+            ls
 - name: Deploy Container
   steps:
   - publishImageConfig:
