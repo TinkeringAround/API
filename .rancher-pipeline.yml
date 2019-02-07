@@ -5,4 +5,8 @@ stages:
       dockerfilePath: ./Dockerfile
       buildContext: .
       tag: tinkeringaround/api
+- name: Deploy Container
+  steps:
+  - applyYamlConfig:
+      path: ./deployment.yaml
 timeout: 5
