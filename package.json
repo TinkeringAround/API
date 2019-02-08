@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
-    "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api",
+    "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api:latest",
     "start": "nodemon server.js",
     "test": "jest --watchAll",
     "travis": "jest"
