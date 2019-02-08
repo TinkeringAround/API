@@ -1,5 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+
 const app = express();
 
 const userRoutes = require("./api/routes/user");
@@ -7,6 +9,8 @@ const mainRoutes = require("./api/routes/main");
 
 // Middleware
 app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // CORS
 app.use((req, res, next) => {
