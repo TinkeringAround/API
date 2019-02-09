@@ -5,7 +5,6 @@ services:
   - docker
 
 before_install:
-  - mkdir deployment
   - openssl enc -d -aes-192-cbc -in deployment/encrypted.enc -out deployment/cluster-kubeconfig.yaml -pass pass:${KEY}
 
 script:
