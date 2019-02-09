@@ -1,22 +1,38 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   name: myapi
 spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
+      nodePort: 30000
+  selector:
+    app: api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
   selector:
     matchLabels:
-      app: myapi
+      app: api
   replicas: 2
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: myapi
+        app: api
     spec:
       containers:
-        - name: myapi
+        - name: api
           image: tinkeringaround/api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -39,5 +55,3 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 1
----
-

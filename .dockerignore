@@ -2,3 +2,5 @@ node_modules
 npm-debug.log
 Readme.md
 *.test.js
+deployment/*
+.env

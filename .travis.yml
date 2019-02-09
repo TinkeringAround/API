@@ -4,8 +4,14 @@ node_js: "node"
 services:
   - docker
 
+before_install:
+  - openssl enc -d -aes-192-cbc -in encrypted.enc -out cluster-kubeconfig.yaml -pass pass:${KEY}
+  - mkdir deployment
+  - mv cluster-kubeconfig.yaml deployment
+
 script:
-  - npm run travis
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - docker build -t tinkeringaround/api:latest .
-  - docker push tinkeringaround/api:latest
+  - npm run test
+  - npm run build
+  - npm run cluster-delete
+  - npm run cluster-create
