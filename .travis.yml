@@ -18,3 +18,6 @@ script:
   - npm run build
   - npm run cluster-delete
   - npm run cluster-create
+
+env:
+  - API_VERSION=v1
