@@ -1,21 +1,22 @@
 const request = require("supertest");
 const app = require("../../app");
+require("dotenv").config();
 
-// USER PATHS /user
-describe("Test /user paths", () => {
-  test("It should respond with 404 via GET", () => {
+// USER PATHS /users
+describe("Test /users paths", () => {
+  test("It should respond with 200 via GET", () => {
     return request(app)
-      .get("/user")
+      .get("/api/" + process.env.API_VERSION + "/users")
       .then(response => {
         expect(response).not.toBeNull();
-        expect(response.statusCode).toBe(404);
-        expect(response.body.hasOwnProperty("error")).toBeTruthy();
+        expect(response.statusCode).toBe(200);
+        expect(response.body.hasOwnProperty("requests")).toBeTruthy();
       });
   });
 
   test("It should respond with 404 via POST", () => {
     return request(app)
-      .post("/user")
+      .post("/api/" + process.env.API_VERSION + "/users")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -25,7 +26,7 @@ describe("Test /user paths", () => {
 
   test("It should respond with 404 via PUT", () => {
     return request(app)
-      .put("/user")
+      .put("/api/" + process.env.API_VERSION + "/users")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -35,7 +36,7 @@ describe("Test /user paths", () => {
 
   test("It should respond with 404 via PATCH", () => {
     return request(app)
-      .patch("/user")
+      .patch("/api/" + process.env.API_VERSION + "/users")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -45,7 +46,7 @@ describe("Test /user paths", () => {
 
   test("It should respond with 404 via DELETE", () => {
     return request(app)
-      .delete("/user")
+      .delete("/api/" + process.env.API_VERSION + "/users")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -54,11 +55,11 @@ describe("Test /user paths", () => {
   });
 });
 
-// /user/signup
-describe("Test /user/signup path", () => {
+// /users/signup
+describe("Test /users/signup path", () => {
   test("It should respond 404 via GET", () => {
     return request(app)
-      .get("/user/signup")
+      .get("/api/" + process.env.API_VERSION + "/users/signup")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -68,7 +69,7 @@ describe("Test /user/signup path", () => {
 
   test("It should respond 200 via POST", () => {
     return request(app)
-      .post("/user/signup")
+      .post("/api/" + process.env.API_VERSION + "/users/signup")
       .send({ email: "test@test.de", password: "test123" })
       .set("Accept", "application/json")
       .then(response => {
@@ -80,7 +81,7 @@ describe("Test /user/signup path", () => {
 
   test("It should respond 500 via POST", () => {
     return request(app)
-      .post("/user/signup")
+      .post("/api/" + process.env.API_VERSION + "/users/signup")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(500);
@@ -90,7 +91,7 @@ describe("Test /user/signup path", () => {
 
   test("It should respond with 404 via PUT", () => {
     return request(app)
-      .put("/user/signup")
+      .put("/api/" + process.env.API_VERSION + "/users/signup")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -100,7 +101,7 @@ describe("Test /user/signup path", () => {
 
   test("It should respond with 404 via PATCH", () => {
     return request(app)
-      .patch("/user/signup")
+      .patch("/api/" + process.env.API_VERSION + "/users/signup")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -110,7 +111,7 @@ describe("Test /user/signup path", () => {
 
   test("It should respond with 404 via DELETE", () => {
     return request(app)
-      .delete("/user/signup")
+      .delete("/api/" + process.env.API_VERSION + "/users/signup")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -119,11 +120,11 @@ describe("Test /user/signup path", () => {
   });
 });
 
-// /user/login
-describe("Test /user/login path", () => {
+// /users/login
+describe("Test /users/login path", () => {
   test("It should respond 404 via GET", () => {
     return request(app)
-      .get("/user/login")
+      .get("/api/" + process.env.API_VERSION + "/users/login")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -133,7 +134,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond 200 via POST", () => {
     return request(app)
-      .post("/user/login")
+      .post("/api/" + process.env.API_VERSION + "/users/login")
       .send({ email: "test@test.de", password: "test123" })
       .set("Accept", "application/json")
       .then(response => {
@@ -146,7 +147,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond 500 via POST", () => {
     return request(app)
-      .post("/user/login")
+      .post("/api/" + process.env.API_VERSION + "/users/login")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(500);
@@ -156,7 +157,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via PUT", () => {
     return request(app)
-      .put("/user/login")
+      .put("/api/" + process.env.API_VERSION + "/users/login")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -166,7 +167,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via PATCH", () => {
     return request(app)
-      .patch("/user/login")
+      .patch("/api/" + process.env.API_VERSION + "/users/login")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -176,7 +177,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via DELETE", () => {
     return request(app)
-      .delete("/user/login")
+      .delete("/api/" + process.env.API_VERSION + "/users/login")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -185,11 +186,11 @@ describe("Test /user/login path", () => {
   });
 });
 
-// /user/logout
-describe("Test /user/login path", () => {
+// /users/logout
+describe("Test /users/login path", () => {
   test("It should respond 404 via GET", () => {
     return request(app)
-      .get("/user/logout")
+      .get("/api/" + process.env.API_VERSION + "/users/logout")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -199,7 +200,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond 200 via POST", () => {
     return request(app)
-      .post("/user/logout")
+      .post("/api/" + process.env.API_VERSION + "/users/logout")
       .send({ email: "test@test.de", token: "token" })
       .set("Accept", "application/json")
       .then(response => {
@@ -211,7 +212,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond 401 via POST", () => {
     return request(app)
-      .post("/user/logout")
+      .post("/api/" + process.env.API_VERSION + "/users/logout")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(401);
@@ -221,7 +222,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via PUT", () => {
     return request(app)
-      .put("/user/logout")
+      .put("/api/" + process.env.API_VERSION + "/users/logout")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -231,7 +232,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via PATCH", () => {
     return request(app)
-      .patch("/user/logout")
+      .patch("/api/" + process.env.API_VERSION + "/users/logout")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);
@@ -241,7 +242,7 @@ describe("Test /user/login path", () => {
 
   test("It should respond with 404 via DELETE", () => {
     return request(app)
-      .delete("/user/logout")
+      .delete("/api/" + process.env.API_VERSION + "/users/logout")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(404);

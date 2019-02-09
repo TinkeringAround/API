@@ -1,11 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+require("dotenv").config();
 
 const app = express();
 
-const userRoutes = require("./api/routes/user");
 const mainRoutes = require("./api/routes/main");
+const userRoutes = require("./api/routes/users");
 
 // Middleware
 app.use(morgan("dev"));
@@ -28,7 +29,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/", mainRoutes);
-app.use("/user", userRoutes);
+app.use("/api/" + process.env.API_VERSION + "/users", userRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
