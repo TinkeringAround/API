@@ -5,9 +5,8 @@ services:
   - docker
 
 before_install:
-  - openssl enc -d -aes-192-cbc -in encrypted.enc -out cluster-kubeconfig.yaml -pass pass:${KEY}
   - mkdir deployment
-  - mv cluster-kubeconfig.yaml deployment
+  - openssl enc -d -aes-192-cbc -in deployment/encrypted.enc -out deployment/cluster-kubeconfig.yaml -pass pass:${KEY}
 
 script:
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
