@@ -1,4 +1,3 @@
 /node_modules
 /deployment/cluster-kubeconfig.yaml
 package-lock.json
-.env
