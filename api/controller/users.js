@@ -1,15 +1,9 @@
-require("dotenv").config();
-
 exports.root = (req, res, next) => {
   return res.status(200).json({
-    time: new Date().toLocaleDateString(),
-    requests: [
+    routes: [
       {
         type: "POST",
-        url:
-          "http://157.230.106.78:30000/api/" +
-          process.env.API_VERSION +
-          "/users/signup",
+        url: "http://157.230.106.78:30000/api/v1/users/signup",
         description: "Make a POST request with valid body for Signup",
         body: {
           email: "string",
@@ -18,10 +12,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "POST",
-        url:
-          "http://157.230.106.78:30000/api/" +
-          process.env.API_VERSION +
-          "/users/login",
+        url: "http://157.230.106.78:30000/api/v1/users/login",
         description: "Make a POST request with valid body for Login",
         body: {
           email: "string",
@@ -30,17 +21,15 @@ exports.root = (req, res, next) => {
       },
       {
         type: "POST",
-        url:
-          "http://157.230.106.78:30000/api/" +
-          process.env.API_VERSION +
-          "/users/logout",
+        url: "http://157.230.106.78:30000/api/v1/users/logout",
         description: "Make a POST request with valid body for Logout",
         body: {
           email: "string",
           token: "string"
         }
       }
-    ]
+    ],
+    time: new Date().toLocaleDateString()
   });
 };
 
