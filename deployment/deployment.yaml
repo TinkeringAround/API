@@ -41,6 +41,11 @@ spec:
                 secretKeyRef:
                   name: mongo-credential
                   key: password
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-key
+                  key: key
           readinessProbe:
             failureThreshold: 3
             httpGet:

@@ -1,3 +1,10 @@
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const User = require("../models/user");
+
 exports.root = (req, res, next) => {
   return res.status(200).json({
     routes: [
@@ -34,45 +41,142 @@ exports.root = (req, res, next) => {
 };
 
 exports.signup = (req, res, next) => {
-  if (req.body.hasOwnProperty("email") && req.body.hasOwnProperty("password")) {
-    return res.status(200).json({
-      message: "Signup succeeded!",
-      email: req.body.email,
-      time: new Date().toISOString()
-    });
-  } else {
+  if (
+    !req.body.hasOwnProperty("email") ||
+    !req.body.hasOwnProperty("password")
+  ) {
     return res.status(500).json({
-      error: "Missing user data!",
+      error: "Signup has failed!",
       time: new Date().toISOString()
     });
   }
+
+  User.find({ email: req.body.email })
+    .exec()
+    .then(user => {
+      if (user.length >= 1) {
+        return res.status(409).json({
+          message: "Mail does already exist.",
+          time: new Date().toISOString()
+        });
+      } else {
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          if (err) {
+            return res.status(500).json({
+              error: err,
+              time: new Date().toISOString()
+            });
+          } else {
+            const user = new User({
+              _id: new mongoose.Types.ObjectId(),
+              email: req.body.email,
+              password: hash,
+              createdAt: new Date().toDateString()
+            });
+            user
+              .save()
+              .then(result => {
+                console.log(result);
+                res.status(201).json({
+                  message: "User has been created.",
+                  email: user.email,
+                  time: new Date().toISOString()
+                });
+              })
+              .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                  error: err,
+                  time: new Date().toISOString()
+                });
+              });
+          }
+        });
+      }
+    });
 };
 
 exports.login = (req, res, nex) => {
-  if (req.body.hasOwnProperty("email") && req.body.hasOwnProperty("password")) {
-    return res.status(200).json({
-      message: "Login succeeded!",
-      token: "token",
-      time: new Date().toISOString()
-    });
-  } else {
+  if (
+    !req.body.hasOwnProperty("email") ||
+    !req.body.hasOwnProperty("password")
+  ) {
     return res.status(500).json({
-      error: "Missing user data!",
+      error: "Login has failed.",
       time: new Date().toISOString()
     });
   }
+
+  User.find({ email: req.body.email })
+    .exec()
+    .then(user => {
+      if (user.length < 1) {
+        return res.status(401).json({
+          message: "Auth has failed.",
+          time: new Date().toISOString()
+        });
+      }
+
+      bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+        if (err) {
+          return res.status(401).json({
+            message: "Auth has failed.",
+            time: new Date().toISOString()
+          });
+        }
+        if (result) {
+          const token = jwt.sign(
+            {
+              email: user[0].email,
+              userId: user[0]._id
+            },
+            process.env.JWT_KEY,
+            {
+              expiresIn: "1h"
+            }
+          );
+          return res.status(200).json({
+            message: "Auth is successful.",
+            token: token,
+            time: new Date().toISOString()
+          });
+        }
+        res.status(401).json({
+          message: "Auth has failed.",
+          time: new Date().toISOString()
+        });
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+        time: new Date().toISOString()
+      });
+    });
 };
 
-exports.logout = (req, res, next) => {
-  if (req.body.hasOwnProperty("email") && req.body.hasOwnProperty("token")) {
-    return res.status(200).json({
-      message: "Logout successful!",
-      time: new Date().toISOString()
-    });
-  } else {
-    return res.status(401).json({
-      error: "Unauthorized!",
+exports.delete = (req, res, next) => {
+  if (!req.params.userID) {
+    return res.status(500).json({
+      error: "Deleting User has failed.",
       time: new Date().toISOString()
     });
   }
+
+  User.remove({ _id: req.params.userID })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        message: "User deleted.",
+        time: new Date().toISOString()
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+        time: new Date().toISOString()
+      });
+    });
 };

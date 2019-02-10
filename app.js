@@ -10,17 +10,16 @@ const mainRoutes = require("./api/routes/main");
 const v1Routes = require("./api/routes/v1");
 const userRoutes = require("./api/routes/users");
 
-console.log("MongoDB-Password: " + process.env.MONGODB_PASSWORD);
 // Database Setup
-/*mongoose.connect(
+mongoose.connect(
   "mongodb+srv://admin:" +
     process.env.MONGODB_PASSWORD +
     "@api-uqlle.mongodb.net/test?retryWrites=true",
   {
-    useMongoClient: true
+    useNewUrlParser: true
   }
 );
-mongoose.Promise = global.Promise;*/
+mongoose.Promise = global.Promise;
 
 // Middleware
 app.use(morgan("dev"));
@@ -55,9 +54,8 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
-    error: {
-      message: error.message
-    }
+    error: error.message,
+    time: new Date().toISOString()
   });
 });
 
