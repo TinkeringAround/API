@@ -1,3 +1,7 @@
 /node_modules
+
 /deployment/cluster*
+/deployment/secrets*
+
 package-lock.json
+.env

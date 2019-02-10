@@ -35,6 +35,12 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          env:
+            - name: MONGODB_PASSWORD
+              valueFrom:
+              secretKeyRef:
+                name: mongo-credentials
+                key: password
           readinessProbe:
             failureThreshold: 3
             httpGet:

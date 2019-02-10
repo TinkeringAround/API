@@ -1,12 +1,26 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 const app = express();
 
 const mainRoutes = require("./api/routes/main");
 const v1Routes = require("./api/routes/v1");
 const userRoutes = require("./api/routes/users");
+
+console.log("MongoDB-Password: " + process.env.MONGODB_PASSWORD);
+// Database Setup
+/*mongoose.connect(
+  "mongodb+srv://admin:" +
+    process.env.MONGODB_PASSWORD +
+    "@api-uqlle.mongodb.net/test?retryWrites=true",
+  {
+    useMongoClient: true
+  }
+);
+mongoose.Promise = global.Promise;*/
 
 // Middleware
 app.use(morgan("dev"));

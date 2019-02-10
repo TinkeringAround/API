@@ -3,3 +3,4 @@ npm-debug.log
 Readme.md
 *.test.js
 deployment/*
+.env

@@ -5,12 +5,13 @@
   "main": "server.js",
   "scripts": {
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
-    "container": "docker container run --name api --rm -p 3000:3000 tinkeringaround/api:latest",
+    "container": "docker container run --name api --rm --env-file ./.env -p 3000:3000 tinkeringaround/api:latest",
     "start": "nodemon server.js",
-    "dev-test": "jest --watchAll",
+    "ttd": "jest --watchAll",
     "test": "jest",
     "cluster-create": "kubectl create --kubeconfig='./deployment/cluster-kubeconfig.yaml' -f ./deployment/deployment.yaml",
     "cluster-status": "kubectl get --kubeconfig='./deployment/cluster-kubeconfig.yaml' all",
+    "cluster-secrets": "kubectl get --kubeconfig='./deployment/cluster-kubeconfig.yaml' secrets",
     "cluster-info": "kubectl describe --kubeconfig='./deployment/cluster-kubeconfig.yaml' service/myapi",
     "cluster-update": "kubectl replace --kubeconfig='./deployment/cluster-kubeconfig.yaml' --force -f ./deployment/deployment.yaml",
     "cluster-delete": "kubectl delete --kubeconfig='./deployment/cluster-kubeconfig.yaml' -f ./deployment/deployment.yaml",
@@ -33,12 +34,14 @@
   "homepage": "https://github.com/TinkeringAround/API#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "mongoose": "^5.4.11",
+    "nodemon": "^1.18.9",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
     "jest": "^24.0.0",
-    "nodemon": "^1.18.9",
     "supertest": "^3.4.2"
   }
 }
