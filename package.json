@@ -7,7 +7,6 @@
     "build": "docker build -t tinkeringaround/api . && docker push tinkeringaround/api:latest",
     "container": "docker container run --name api --rm --env-file ./.env -p 3000:3000 tinkeringaround/api:latest",
     "start": "nodemon server.js",
-    "ttd": "jest --watchAll",
     "test": "jest",
     "cluster-create": "kubectl create --kubeconfig='./deployment/cluster-kubeconfig.yaml' -f ./deployment/deployment.yaml",
     "cluster-status": "kubectl get --kubeconfig='./deployment/cluster-kubeconfig.yaml' all",

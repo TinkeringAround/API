@@ -14,6 +14,5 @@ before_install:
 
 script:
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-  - npm run test
   - npm run build
   - npm run cluster-update
