@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -60,37 +60,39 @@ exports.signup = (req, res, next) => {
           time: new Date().toISOString()
         });
       } else {
-        bcrypt.hash(req.body.password, 10, (err, hash) => {
-          if (err) {
-            return res.status(500).json({
-              error: err,
-              time: new Date().toISOString()
-            });
-          } else {
-            const user = new User({
-              _id: new mongoose.Types.ObjectId(),
-              email: req.body.email,
-              password: hash,
-              createdAt: new Date().toDateString()
-            });
-            user
-              .save()
-              .then(result => {
-                console.log(result);
-                res.status(201).json({
-                  message: "User has been created.",
-                  email: user.email,
-                  time: new Date().toISOString()
-                });
-              })
-              .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                  error: err,
-                  time: new Date().toISOString()
-                });
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) {
+              return res.status(500).json({
+                error: err,
+                time: new Date().toISOString()
               });
-          }
+            } else {
+              const user = new User({
+                _id: new mongoose.Types.ObjectId(),
+                email: req.body.email,
+                password: hash,
+                createdAt: new Date().toDateString()
+              });
+              user
+                .save()
+                .then(result => {
+                  console.log(result);
+                  res.status(201).json({
+                    message: "User has been created.",
+                    email: user.email,
+                    time: new Date().toISOString()
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
+                  res.status(500).json({
+                    error: err,
+                    time: new Date().toISOString()
+                  });
+                });
+            }
+          });
         });
       }
     });
