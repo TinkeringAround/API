@@ -38,9 +38,9 @@ spec:
           env:
             - name: MONGODB_PASSWORD
               valueFrom:
-              secretKeyRef:
-                name: mongo-credentials
-                key: password
+                secretKeyRef:
+                  name: mongo-credentials
+                  key: password
           readinessProbe:
             failureThreshold: 3
             httpGet:
