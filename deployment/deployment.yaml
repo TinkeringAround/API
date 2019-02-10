@@ -39,7 +39,7 @@ spec:
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mongo-credentials
+                  name: mongo-credential
                   key: password
           readinessProbe:
             failureThreshold: 3

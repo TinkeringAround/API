@@ -16,5 +16,4 @@ script:
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
   - npm run test
   - npm run build
-  - npm run cluster-delete
-  - npm run cluster-create
+  - npm run cluster-update
