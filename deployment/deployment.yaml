@@ -46,6 +46,11 @@ spec:
                 secretKeyRef:
                   name: jwt-key
                   key: key
+            - name: SENDGRID_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sg-key
+                  key: key
           readinessProbe:
             failureThreshold: 3
             httpGet:
