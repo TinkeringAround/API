@@ -166,29 +166,28 @@ exports.activateUser = (req, res, next) => {
         });
       }
 
-      if (user.status === "active") {
+      if (user[0].status === "active") {
         return res.status(200).json({
           message: "Activating User was successful.",
           status: "active",
           time: new Date().toISOString()
         });
-      } else {
-        if (req.body.code === user.code) {
-          user.status = "active";
-          user.save().then(result => {
-            console.log(result);
-            return res.status(200).json({
-              message: "Activating User was successful.",
-              status: "active",
-              time: new Date().toISOString()
-            });
-          });
-        } else {
-          return res.status(401).json({
-            message: "Activating User has failed.",
+      }
+
+      if (req.body.code.toString() == user[0].code) {
+        user[0].status = "active";
+        user[0].save().then(result => {
+          return res.status(200).json({
+            message: "Activating User was successful.",
+            status: "active",
             time: new Date().toISOString()
           });
-        }
+        });
+      } else {
+        return res.status(401).json({
+          message: "Activating User has failed.",
+          time: new Date().toISOString()
+        });
       }
     })
     .catch(err => {
