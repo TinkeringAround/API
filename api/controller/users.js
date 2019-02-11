@@ -221,10 +221,10 @@ exports.login = (req, res, nex) => {
         });
       }
 
-      if (user.status === "unverified") {
+      if (user[0].status === "unverified") {
         return res.status(401).json({
           message: "Login has failed.",
-          status: user.status,
+          status: user[0].status,
           time: new Date().toISOString()
         });
       }
