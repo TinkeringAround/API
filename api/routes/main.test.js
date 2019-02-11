@@ -5,11 +5,11 @@ const app = require("../../app");
 describe("Test health path", () => {
   test("It should respond the default json response via GET", () => {
     return request(app)
-      .get("/")
+      .get("/api/v1")
       .then(response => {
         expect(response).not.toBeNull();
         expect(response.statusCode).toBe(200);
-        expect(response.body).toHaveProperty("api");
+        expect(response.body).toHaveProperty("routes");
         expect(response.body).toHaveProperty("time");
       });
   });

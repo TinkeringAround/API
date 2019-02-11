@@ -5,7 +5,11 @@ const checkAuth = require("../middleware/check-Auth");
 const UserController = require("../controller/users");
 
 router.get("/", UserController.root);
+
+// Initial Registration and Verification
 router.post("/signup", UserController.signup);
+router.patch("/signup/:userID", checkAuth, UserController.activateUser);
+
 router.post("/login", UserController.login);
 router.delete("/:userID", checkAuth, UserController.delete);
 

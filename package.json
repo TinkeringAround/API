@@ -38,7 +38,8 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.11",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "random-number": "0.0.9"
   },
   "devDependencies": {
     "jest": "^24.0.0",

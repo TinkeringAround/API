@@ -6,8 +6,8 @@ require("dotenv").config();
 
 const app = express();
 
+const rootRoutes = require("./api/routes/root");
 const mainRoutes = require("./api/routes/main");
-const v1Routes = require("./api/routes/v1");
 const userRoutes = require("./api/routes/users");
 
 // Database Setup
@@ -41,8 +41,8 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use("/", mainRoutes);
-app.use("/api/v1/", v1Routes);
+app.use("/", rootRoutes);
+app.use("/api/v1/", mainRoutes);
 app.use("/api/v1/users/", userRoutes);
 
 app.use((req, res, next) => {

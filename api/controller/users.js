@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
+require("dotenv").config();
+var codeGen = require("random-number");
+
+// Models
 const User = require("../models/user");
 
 exports.root = (req, res, next) => {
@@ -18,6 +21,15 @@ exports.root = (req, res, next) => {
         }
       },
       {
+        type: "PATCH",
+        url: "http://157.230.106.78:30000/api/v1/users/signup/:userID",
+        description:
+          "Make a PATCH request with valid body and params for Activating your User Account",
+        body: {
+          code: "string"
+        }
+      },
+      {
         type: "POST",
         url: "http://157.230.106.78:30000/api/v1/users/login",
         description: "Make a POST request with valid body for Login",
@@ -27,12 +39,11 @@ exports.root = (req, res, next) => {
         }
       },
       {
-        type: "POST",
-        url: "http://157.230.106.78:30000/api/v1/users/logout",
-        description: "Make a POST request with valid body for Logout",
-        body: {
-          email: "string",
-          token: "string"
+        type: "DELETE",
+        url: "http://157.230.106.78:30000/api/v1/users/:userID",
+        description: "Make a DELETE request with valid body for Logout",
+        header: {
+          authorization: "Bearer token"
         }
       }
     ],
@@ -56,7 +67,7 @@ exports.signup = (req, res, next) => {
     .then(user => {
       if (user.length >= 1) {
         return res.status(409).json({
-          message: "Mail does already exist.",
+          message: "Signup has failed.",
           time: new Date().toISOString()
         });
       } else {
@@ -72,15 +83,35 @@ exports.signup = (req, res, next) => {
                 _id: new mongoose.Types.ObjectId(),
                 email: req.body.email,
                 password: hash,
-                createdAt: new Date().toDateString()
+                createdAt: new Date().toDateString(),
+                status: "unverified",
+                code: codeGen({
+                  min: 100000,
+                  max: 999999,
+                  integer: true
+                }).toString()
               });
+
               user
                 .save()
                 .then(result => {
                   console.log(result);
+                  const token = jwt.sign(
+                    {
+                      email: user.email,
+                      userId: user._id
+                    },
+                    process.env.JWT_KEY,
+                    {
+                      expiresIn: "1h"
+                    }
+                  );
+
+                  // Generate Email and then respond
                   res.status(201).json({
                     message: "User has been created.",
                     email: user.email,
+                    token: token,
                     time: new Date().toISOString()
                   });
                 })
@@ -95,6 +126,61 @@ exports.signup = (req, res, next) => {
           });
         });
       }
+    });
+};
+
+exports.activateUser = (req, res, next) => {
+  if (
+    !req.params.hasOwnProperty("userID") ||
+    !req.body.hasOwnProperty("code")
+  ) {
+    return res.status(500).json({
+      error: "Activating User has failed.",
+      time: new Date().toISOString()
+    });
+  }
+
+  User.find({ _id: req.params.userID })
+    .exec()
+    .then(user => {
+      if (user.length < 1) {
+        return res.status(401).json({
+          message: "Activating User has failed.",
+          time: new Date().toISOString()
+        });
+      }
+
+      if (user.status === "active") {
+        return res.status(200).json({
+          message: "Activating User was successful.",
+          status: "active",
+          time: new Date().toISOString()
+        });
+      } else {
+        if (req.body.code === user.code) {
+          user.status = "active";
+          user.save().then(result => {
+            console.log(result);
+            return res.status(200).json({
+              message: "Activating User was successful.",
+              status: "active",
+              time: new Date().toISOString()
+            });
+          });
+        } else {
+          return res.status(401).json({
+            message: "Activating User has failed.",
+            time: new Date().toISOString()
+          });
+        }
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+        time: new Date().toISOString()
+      });
     });
 };
 
@@ -114,7 +200,15 @@ exports.login = (req, res, nex) => {
     .then(user => {
       if (user.length < 1) {
         return res.status(401).json({
-          message: "Auth has failed.",
+          message: "Login has failed.",
+          time: new Date().toISOString()
+        });
+      }
+
+      if (user.status === "unverified") {
+        return res.status(401).json({
+          message: "Login has failed.",
+          status: user.status,
           time: new Date().toISOString()
         });
       }
@@ -122,10 +216,11 @@ exports.login = (req, res, nex) => {
       bcrypt.compare(req.body.password, user[0].password, (err, result) => {
         if (err) {
           return res.status(401).json({
-            message: "Auth has failed.",
+            message: "Login has failed.",
             time: new Date().toISOString()
           });
         }
+
         if (result) {
           const token = jwt.sign(
             {
@@ -138,13 +233,14 @@ exports.login = (req, res, nex) => {
             }
           );
           return res.status(200).json({
-            message: "Auth is successful.",
+            message: "Login has been successful.",
             token: token,
             time: new Date().toISOString()
           });
         }
+
         res.status(401).json({
-          message: "Auth has failed.",
+          message: "Login has failed.",
           time: new Date().toISOString()
         });
       });
@@ -170,7 +266,7 @@ exports.delete = (req, res, next) => {
     .exec()
     .then(result => {
       res.status(200).json({
-        message: "User deleted.",
+        message: "User has been deleted succesfully.",
         time: new Date().toISOString()
       });
     })

@@ -3,12 +3,11 @@ const router = express.Router();
 
 router.get("/", (req, res, next) => {
   return res.status(200).json({
-    api: [
+    routes: [
       {
-        version: "v1",
-        path: "/api/v1",
-        url: "http://157.230.106.78:30000/api/v1/",
-        date: "9.02.2019"
+        path: "/users",
+        url: "http://157.230.106.78:30000/api/v1/users",
+        description: "User Management Route"
       }
     ],
     time: new Date().toISOString()
