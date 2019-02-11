@@ -110,17 +110,19 @@ exports.signup = (req, res, next) => {
                   );
 
                   // Generate Email and then respond
-                  const msg = {
+                  sgMail.send({
                     to: user.email,
                     from: "maier.thomas94@gmail.com",
                     subject: "Your activation key is here!",
                     text:
-                      "Here is your activation key." +
+                      "Here is your activation key:\n" +
                       user.code +
                       "\nThank your for your registration.",
-                    html: ""
-                  };
-                  sgMail.send(msg);
+                    html:
+                      "<strong>Here is your activation key: " +
+                      user.code +
+                      " Thank your for your registration.</strong>"
+                  });
 
                   res.status(201).json({
                     message: "User has been created.",
