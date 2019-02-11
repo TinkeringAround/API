@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sgMail = require("@sendgrid/mail");
 
 require("dotenv").config();
 var codeGen = require("random-number");
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 // Models
 const User = require("../models/user");
@@ -108,6 +110,18 @@ exports.signup = (req, res, next) => {
                   );
 
                   // Generate Email and then respond
+                  const msg = {
+                    to: user.email,
+                    from: "maier.thomas94@gmail.com",
+                    subject: "Your activation key is here!",
+                    text:
+                      "Here is your activation key." +
+                      user.code +
+                      "\nThank your for your registration.",
+                    html: ""
+                  };
+                  sgMail.send(msg);
+
                   res.status(201).json({
                     message: "User has been created.",
                     email: user.email,
