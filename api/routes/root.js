@@ -7,7 +7,7 @@ router.get("/", (req, res, next) => {
       {
         version: "v1",
         path: "/api/v1",
-        url: "http://157.230.106.78:30000/api/v1/",
+        url: "http://157.230.76.219:30000/api/v1/",
         date: "9.02.2019"
       }
     ],

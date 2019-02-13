@@ -15,7 +15,7 @@ exports.root = (req, res, next) => {
     routes: [
       {
         type: "POST",
-        url: "http://157.230.106.78:30000/api/v1/users/signup",
+        url: "http://157.230.76.219:30000/api/v1/users/signup",
         description: "Make a POST request with valid body for Signup",
         body: {
           email: "string",
@@ -24,7 +24,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "PATCH",
-        url: "http://157.230.106.78:30000/api/v1/users/signup/:userID",
+        url: "http://157.230.76.219:30000/api/v1/users/signup/:userID",
         description:
           "Make a PATCH request with valid body and params for Activating your User Account",
         body: {
@@ -33,7 +33,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "POST",
-        url: "http://157.230.106.78:30000/api/v1/users/login",
+        url: "http://157.230.76.219:30000/api/v1/users/login",
         description: "Make a POST request with valid body for Login",
         body: {
           email: "string",
@@ -42,7 +42,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "DELETE",
-        url: "http://157.230.106.78:30000/api/v1/users/:userID",
+        url: "http://157.230.76.219:30000/api/v1/users/:userID",
         description: "Make a DELETE request with valid body for Logout",
         header: {
           authorization: "Bearer token"
