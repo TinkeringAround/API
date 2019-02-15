@@ -176,7 +176,9 @@ exports.postPuzzle = (req, res, next) => {
 
           res.status(201).json({
             message: "Puzzle has been created.",
-            title: newPuzzle.title,
+            data: {
+              newPuzzle
+            },
             time: new Date().toISOString()
           });
         });
