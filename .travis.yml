@@ -19,3 +19,4 @@ script:
 
 notifications:
   slack: adapt-improve-evolve:${SLACK_TOKEN}
+    on_success: always
