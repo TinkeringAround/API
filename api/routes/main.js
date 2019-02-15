@@ -6,8 +6,11 @@ router.get("/", (req, res, next) => {
     routes: [
       {
         path: "/users",
-        url: "http://157.230.76.219:30000/api/v1/users",
         description: "User Management Route"
+      },
+      {
+        path: "/puzzles",
+        description: "Puzzle Management Route"
       }
     ],
     time: new Date().toISOString()
