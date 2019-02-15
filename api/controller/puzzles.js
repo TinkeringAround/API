@@ -382,7 +382,7 @@ exports.searchPuzzles = (req, res, next) => {
   console.log(searchParameters);
 
   if (searchQueries) {
-    Puzzle.find({ title: searchParameters.title })
+    Puzzle.find(searchParameters)
       .exec()
       .then(puzzles => {
         return res.status(200).json({
