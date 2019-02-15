@@ -4,6 +4,7 @@ const router = express.Router();
 const checkAuth = require("../middleware/check-Auth");
 const UserController = require("../controller/users");
 
+//----------------------------------------------------------------//
 router.get("/", UserController.root);
 
 // Initial Registration and Verification

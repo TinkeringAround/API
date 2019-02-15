@@ -10,12 +10,14 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 // Models
 const User = require("../models/user");
 
+//----------------------------------------------------------------//
+// /users/
 exports.root = (req, res, next) => {
   return res.status(200).json({
     routes: [
       {
         type: "POST",
-        url: "http://157.230.76.219:30000/api/v1/users/signup",
+        url: "/users/signup",
         description: "Make a POST request with valid body for Signup",
         body: {
           email: "string",
@@ -24,7 +26,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "PATCH",
-        url: "http://157.230.76.219:30000/api/v1/users/signup/:userID",
+        url: "/users/signup/:userID",
         description:
           "Make a PATCH request with valid body and params for Activating your User Account",
         body: {
@@ -33,7 +35,7 @@ exports.root = (req, res, next) => {
       },
       {
         type: "POST",
-        url: "http://157.230.76.219:30000/api/v1/users/login",
+        url: "/users/login",
         description: "Make a POST request with valid body for Login",
         body: {
           email: "string",
@@ -42,10 +44,10 @@ exports.root = (req, res, next) => {
       },
       {
         type: "DELETE",
-        url: "http://157.230.76.219:30000/api/v1/users/:userID",
+        url: "/users/:userID",
         description: "Make a DELETE request with valid body for Logout",
         header: {
-          authorization: "Bearer token"
+          authorization: "Bearer Token"
         }
       }
     ],
@@ -53,6 +55,32 @@ exports.root = (req, res, next) => {
   });
 };
 
+exports.delete = (req, res, next) => {
+  if (!req.params.userID) {
+    return res.status(500).json({
+      error: "Deleting User has failed.",
+      time: new Date().toISOString()
+    });
+  }
+
+  User.remove({ _id: req.params.userID })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        message: "User has been succesfully deleted.",
+        time: new Date().toISOString()
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+        time: new Date().toISOString()
+      });
+    });
+};
+
+// users/signup
 exports.signup = (req, res, next) => {
   if (
     !req.body.hasOwnProperty("email") ||
@@ -85,13 +113,15 @@ exports.signup = (req, res, next) => {
                 _id: new mongoose.Types.ObjectId(),
                 email: req.body.email,
                 password: hash,
-                createdAt: new Date().toDateString(),
-                status: "unverified",
-                code: codeGen({
-                  min: 100000,
-                  max: 999999,
-                  integer: true
-                }).toString()
+                meta: {
+                  createdAt: new Date().toDateString(),
+                  status: "unverified",
+                  code: codeGen({
+                    min: 100000,
+                    max: 999999,
+                    integer: true
+                  }).toString()
+                }
               });
 
               user
@@ -166,7 +196,7 @@ exports.activateUser = (req, res, next) => {
         });
       }
 
-      if (user[0].status === "active") {
+      if (user[0].meta.status === "active") {
         return res.status(200).json({
           message: "Activating User was successful.",
           status: "active",
@@ -174,8 +204,8 @@ exports.activateUser = (req, res, next) => {
         });
       }
 
-      if (req.body.code.toString() == user[0].code) {
-        user[0].status = "active";
+      if (req.body.code.toString() == user[0].meta.code) {
+        user[0].meta.status = "active";
         user[0].save().then(result => {
           return res.status(200).json({
             message: "Activating User was successful.",
@@ -199,6 +229,7 @@ exports.activateUser = (req, res, next) => {
     });
 };
 
+// users/login
 exports.login = (req, res, nex) => {
   if (
     !req.body.hasOwnProperty("email") ||
@@ -258,31 +289,6 @@ exports.login = (req, res, nex) => {
           message: "Login has failed.",
           time: new Date().toISOString()
         });
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-        time: new Date().toISOString()
-      });
-    });
-};
-
-exports.delete = (req, res, next) => {
-  if (!req.params.userID) {
-    return res.status(500).json({
-      error: "Deleting User has failed.",
-      time: new Date().toISOString()
-    });
-  }
-
-  User.remove({ _id: req.params.userID })
-    .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "User has been deleted succesfully.",
-        time: new Date().toISOString()
       });
     })
     .catch(err => {

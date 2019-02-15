@@ -9,9 +9,25 @@ const userSchema = mongoose.Schema({
     match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   },
   password: { type: String, required: true },
-  createdAt: { type: String, required: true },
-  status: { type: String, required: true },
-  code: { type: String, required: true }
+  meta: {
+    createdAt: { type: String, required: true },
+    status: { type: String, required: true },
+    code: { type: String, required: true }
+  },
+  activities: {
+    sequences: [
+      {
+        _id: { type: mongoose.SchemaTypes.ObjectId, ref: "Sequence" },
+        status: Object
+      }
+    ],
+    puzzles: [
+      {
+        _id: { type: mongoose.SchemaTypes.ObjectId, ref: "Puzzle" },
+        status: Object
+      }
+    ]
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

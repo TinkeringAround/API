@@ -9,6 +9,7 @@ const app = express();
 const rootRoutes = require("./api/routes/root");
 const mainRoutes = require("./api/routes/main");
 const userRoutes = require("./api/routes/users");
+const puzzleRoutes = require("./api/routes/puzzles");
 
 // Database Setup
 mongoose.connect(
@@ -44,6 +45,7 @@ app.use((req, res, next) => {
 app.use("/", rootRoutes);
 app.use("/api/v1/", mainRoutes);
 app.use("/api/v1/users/", userRoutes);
+app.use("/api/v1/puzzles/", puzzleRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
