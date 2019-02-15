@@ -193,21 +193,166 @@ exports.postPuzzle = (req, res, next) => {
 
 // /puzzles/:puzzleID
 exports.getPuzzle = (req, res, next) => {
-  return res.status(200).json({
-    time: new Date().toISOString()
-  });
+  const { puzzleID } = req.params;
+
+  if (puzzleID == null) {
+    return res.status(409).json({
+      message: "Finding the puzzle has failed.",
+      time: new Date().toISOString()
+    });
+  } else {
+    Puzzle.find({ _id: puzzleID })
+      .exec()
+      .then(puzzles => {
+        if (puzzles.length < 1) {
+          return res.status(409).json({
+            message: "Finding the Puzzle has failed.",
+            time: new Date().toISOString()
+          });
+        } else {
+          const puzzle = puzzles[0];
+          console.log(puzzle);
+
+          return res.status(200).json({
+            message: "Finding the Puzzle has been successful.",
+            data: {
+              puzzleID: puzzleID,
+              title: puzzle.title,
+              description: puzzle.description,
+              type: puzzle.type,
+              meta: puzzle.meta,
+              content: puzzle.content
+            },
+            time: new Date().toISOString()
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).json({
+          error: err,
+          time: new Date().toISOString()
+        });
+      });
+  }
 };
 
 exports.patchPuzzle = (req, res, next) => {
-  return res.status(200).json({
-    time: new Date().toISOString()
-  });
+  const { puzzleID } = req.params;
+  const { title, description, type, meta, content } = req.body;
+
+  if (puzzleID == null || Object.keys(req.body).length === 0) {
+    return res.status(409).json({
+      message: "Updating the puzzle has failed.",
+      time: new Date().toISOString()
+    });
+  } else {
+    Puzzle.find({ _id: puzzleID })
+      .exec()
+      .then(puzzles => {
+        if (puzzles.length < 1) {
+          return res.status(409).json({
+            message: "Updating the Puzzle has failed.",
+            time: new Date().toISOString()
+          });
+        } else {
+          let updatedPuzzle = puzzles[0];
+
+          updatedPuzzle.title = title == null ? updatedPuzzle.title : title;
+          updatedPuzzle.description =
+            description == null ? updatedPuzzle.description : description;
+          updatedPuzzle.type = type == null ? updatedPuzzle.type : type;
+
+          if (meta != null) {
+            updatedPuzzle.meta.tags =
+              meta.tags == null ? updatedPuzzle.meta.tags : meta.tags;
+          }
+          updatedPuzzle.meta.updatedAt = new Date().toISOString();
+
+          if (content != null) {
+            updatedPuzzle.content.task =
+              content.task == null ? updatedPuzzle.content.task : content.task;
+            updatedPuzzle.content.clue =
+              content.clue == null ? updatedPuzzle.content.clue : content.clue;
+            updatedPuzzle.content.solution =
+              content.solution == null
+                ? updatedPuzzle.content.solution
+                : content.solution;
+            updatedPuzzle.content.media =
+              content.media == null
+                ? updatedPuzzle.content.media
+                : content.media;
+            updatedPuzzle.content.puzzle =
+              content.puzzle == null
+                ? updatedPuzzle.content.puzzle
+                : content.puzzle;
+            updatedPuzzle.content.data =
+              content.data == null ? updatedPuzzle.content.data : content.data;
+          }
+
+          updatedPuzzle.save().then(result => {
+            return res.status(200).json({
+              message: "Updating the Puzzle was successful.",
+              data: { updatedPuzzle },
+              time: new Date().toISOString()
+            });
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err,
+          time: new Date().toISOString()
+        });
+      });
+  }
 };
 
 exports.deletePuzzle = (req, res, next) => {
-  return res.status(200).json({
-    time: new Date().toISOString()
-  });
+  const { puzzleID } = req.params;
+
+  if (puzzleID == null) {
+    return res.status(409).json({
+      message: "Deleting the puzzle has failed.",
+      time: new Date().toISOString()
+    });
+  } else {
+    Puzzle.find({ _id: puzzleID })
+      .exec()
+      .then(puzzles => {
+        if (puzzles.length >= 1) {
+          Puzzle.remove({ _id: puzzleID })
+            .exec()
+            .then(result => {
+              return res.status(200).json({
+                message: "Deleting the Puzzle has been successful.",
+                data: { puzzleID: puzzleID },
+                time: new Date().toISOString()
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              return res.status(500).json({
+                error: err,
+                time: new Date().toISOString()
+              });
+            });
+        } else {
+          return res.status(409).json({
+            message: "Deleting the Puzzle has failed.",
+            time: new Date().toISOString()
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).json({
+          error: err,
+          time: new Date().toISOString()
+        });
+      });
+  }
 };
 
 // /puzzles/search/

@@ -63,20 +63,32 @@ exports.delete = (req, res, next) => {
     });
   }
 
-  User.remove({ _id: req.params.userID })
+  User.find({ _id: req.params.userID })
     .exec()
-    .then(result => {
-      res.status(200).json({
-        message: "User has been succesfully deleted.",
-        time: new Date().toISOString()
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-        time: new Date().toISOString()
-      });
+    .then(users => {
+      if (users.length >= 1) {
+        User.remove({ _id: req.params.userID })
+          .exec()
+          .then(result => {
+            res.status(200).json({
+              message: "User has been succesfully deleted.",
+              data: { userID: userID },
+              time: new Date().toISOString()
+            });
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).json({
+              error: err,
+              time: new Date().toISOString()
+            });
+          });
+      } else {
+        return res.status(500).json({
+          error: "Deleting User has failed.",
+          time: new Date().toISOString()
+        });
+      }
     });
 };
 
@@ -146,18 +158,20 @@ exports.signup = (req, res, next) => {
                     subject: "Your activation key is here!",
                     text:
                       "Here is your activation key:\n" +
-                      user.code +
+                      user.meta.code +
                       "\nThank your for your registration.",
                     html:
                       "<strong>Here is your activation key: " +
-                      user.code +
+                      user.meta.code +
                       " Thank your for your registration.</strong>"
                   });
 
                   res.status(201).json({
                     message: "User has been created.",
-                    email: user.email,
-                    token: token,
+                    data: {
+                      email: user.email,
+                      userID: user._id
+                    },
                     time: new Date().toISOString()
                   });
                 })
@@ -199,7 +213,7 @@ exports.activateUser = (req, res, next) => {
       if (user[0].meta.status === "active") {
         return res.status(200).json({
           message: "Activating User was successful.",
-          status: "active",
+          data: { status: "active" },
           time: new Date().toISOString()
         });
       }
@@ -209,7 +223,7 @@ exports.activateUser = (req, res, next) => {
         user[0].save().then(result => {
           return res.status(200).json({
             message: "Activating User was successful.",
-            status: "active",
+            data: { status: "active" },
             time: new Date().toISOString()
           });
         });
@@ -251,10 +265,10 @@ exports.login = (req, res, nex) => {
         });
       }
 
-      if (user[0].status === "unverified") {
+      if (user[0].meta.status === "unverified") {
         return res.status(401).json({
           message: "Login has failed.",
-          status: user[0].status,
+          data: { status: user[0].meta.status },
           time: new Date().toISOString()
         });
       }
@@ -280,7 +294,7 @@ exports.login = (req, res, nex) => {
           );
           return res.status(200).json({
             message: "Login has been successful.",
-            token: token,
+            data: { userID: user[0]._id, token: token },
             time: new Date().toISOString()
           });
         }
