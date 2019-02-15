@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+// Utils
+const StringTransform = require("../util/stringTransform");
+
 // Models
 const Puzzle = require("../models/Puzzle");
 
@@ -20,10 +23,8 @@ exports.root = (req, res, next) => {
           title: "string",
           description: "string",
           type: "string",
-          meta: {
-            author: "string",
-            tags: "[string]"
-          },
+          author: "string",
+          tags: "[string]",
           content: {
             task: "string",
             clue: "string",
@@ -36,39 +37,39 @@ exports.root = (req, res, next) => {
       },
       {
         type: "GET",
-        url: "/puzzles/search/",
+        url: "/puzzles/search",
         description: "Make a GET request for filtering Puzzles",
         header: {
-          authorization: "Bearer token"
+          authorization: "Bearer Token"
         },
         queryParams: {
           title: {
-            path: "/puzzles/search/?title=",
-            example: "/puzzles/search/?title=Some_title"
+            path: "/puzzles/search?title=",
+            example: "/puzzles/search?title=Some_title"
           },
-          tag: {
-            path: "/puzzles/search/?tags=",
-            example: "/puzzles/search/?tags=tag1_tag2_tag3"
+          tags: {
+            path: "/puzzles/search?tags=",
+            example: "/puzzles/search?tags=tag1_tag2_tag3"
           },
           type: {
-            path: "/puzzles/search/?type=",
-            example: "/puzzles/search/?type=type"
+            path: "/puzzles/search?type=",
+            example: "/puzzles/search?type=type"
           },
           author: {
-            path: "/puzzles/search/?author=",
-            example: "/puzzles/search/?author=Some_author"
+            path: "/puzzles/search?author=",
+            example: "/puzzles/search?author=Some_author"
           },
           createdAt: {
-            path: "/puzzles/search/?createdAt=",
-            example: "/puzzles/search/?createdAt=15_02_2019"
+            path: "/puzzles/search?createdAt=",
+            example: "/puzzles/search?createdAt=15_02_2019"
           },
           updatedAt: {
-            path: "/puzzles/search/?updatedAt=",
-            example: "/puzzles/search/?updatedAt=15_02_2019"
+            path: "/puzzles/search?updatedAt=",
+            example: "/puzzles/search?updatedAt=15_02_2019"
           },
           page: {
-            path: "puzzles/search/?page=",
-            example: "/puzzles/search/?page=1"
+            path: "puzzles/search?page=",
+            example: "/puzzles/search?page=1"
           }
         }
       },
@@ -90,9 +91,7 @@ exports.root = (req, res, next) => {
         body: {
           title: "string",
           description: "string",
-          meta: {
-            tags: "[string]"
-          },
+          tags: "[string]",
           content: {
             task: "string",
             clue: "string",
@@ -117,14 +116,13 @@ exports.root = (req, res, next) => {
 };
 
 exports.postPuzzle = (req, res, next) => {
-  let { title, description, type, meta, content } = req.body;
+  let { title, description, type, author, tags, content } = req.body;
 
   if (
     title == null ||
     description == null ||
     type == null ||
-    meta == null ||
-    meta.author == null ||
+    author == null ||
     content == null ||
     content.task == null
   ) {
@@ -133,7 +131,7 @@ exports.postPuzzle = (req, res, next) => {
       time: new Date().toISOString()
     });
   } else {
-    meta.tags = meta.tags ? meta.tags : [];
+    tags = tags != null ? tags : [];
     content.clue = content.clue ? content.clue : "";
     content.solution = content.solution ? content.solution : [];
     content.media = content.media ? content.media : "";
@@ -154,12 +152,12 @@ exports.postPuzzle = (req, res, next) => {
           _id: new mongoose.Types.ObjectId(),
           title: title,
           description: description,
+          author: author,
           type: type,
+          tags: tags,
           meta: {
-            author: meta.author,
             createdAt: new Date().toDateString(),
-            updatedAt: new Date().toDateString(),
-            tags: meta.tags
+            updatedAt: new Date().toDateString()
           },
           content: {
             task: content.task,
@@ -221,7 +219,9 @@ exports.getPuzzle = (req, res, next) => {
               puzzleID: puzzleID,
               title: puzzle.title,
               description: puzzle.description,
+              author: puzzle.author,
               type: puzzle.type,
+              tags: puzzle.tags,
               meta: puzzle.meta,
               content: puzzle.content
             },
@@ -241,7 +241,7 @@ exports.getPuzzle = (req, res, next) => {
 
 exports.patchPuzzle = (req, res, next) => {
   const { puzzleID } = req.params;
-  const { title, description, type, meta, content } = req.body;
+  const { title, description, type, tags, meta, content } = req.body;
 
   if (puzzleID == null || Object.keys(req.body).length === 0) {
     return res.status(409).json({
@@ -264,11 +264,8 @@ exports.patchPuzzle = (req, res, next) => {
           updatedPuzzle.description =
             description == null ? updatedPuzzle.description : description;
           updatedPuzzle.type = type == null ? updatedPuzzle.type : type;
+          updatedPuzzle.tags = tags == null ? updatedPuzzle.tags : tags;
 
-          if (meta != null) {
-            updatedPuzzle.meta.tags =
-              meta.tags == null ? updatedPuzzle.meta.tags : meta.tags;
-          }
           updatedPuzzle.meta.updatedAt = new Date().toISOString();
 
           if (content != null) {
@@ -359,7 +356,68 @@ exports.deletePuzzle = (req, res, next) => {
 
 // /puzzles/search/
 exports.searchPuzzles = (req, res, next) => {
-  return res.status(200).json({
-    time: new Date().toISOString()
-  });
+  const { page, title, tag, type, author, createdAt, updatedAt } = req.query;
+
+  let searchQueries = false;
+  let searchParameters = {};
+
+  // Page & Limit
+  const options = {
+    skip: page == null ? 0 : 10 * parseInt(page),
+    limit: page == null ? 15 : 10
+  };
+
+  if (title != null || tag != null || type != null || author != null) {
+    searchQueries = true;
+
+    // Search Parameters
+    if (title != null) searchParameters.title = title;
+    if (tag != null) searchParameters.tag = tag;
+    if (type != null) searchParameters.type = type;
+    if (author != null) {
+      searchParameters.author = StringTransform.createAuthor(author);
+    }
+  }
+
+  console.log(searchParameters);
+
+  if (searchQueries) {
+    Puzzle.find({ title: searchParameters.title })
+      .exec()
+      .then(puzzles => {
+        return res.status(200).json({
+          message: "Search request has ben successful.",
+          data: {
+            puzzles: puzzles
+          },
+          time: new Date().toISOString()
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).json({
+          error: err,
+          time: new Date().toISOString()
+        });
+      });
+  } else {
+    Puzzle.find({}, null, options)
+      .exec()
+      .then(puzzles => {
+        return res.status(200).json({
+          message: "Search request has ben successful.",
+          data: {
+            puzzles: puzzles
+          },
+          time: new Date().toISOString()
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        return res.status(500).json({
+          error: err,
+          time: new Date().toISOString()
+        });
+      });
+  }
 };
