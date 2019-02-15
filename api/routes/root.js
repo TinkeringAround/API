@@ -8,6 +8,10 @@ router.get("/", (req, res, next) => {
         version: "v1",
         path: "/api/v1",
         url: "http://157.230.76.219:30000/api/v1/",
+        maintainer: {
+          name: "Thomas Maier",
+          source: "https://github.com/TinkeringAround"
+        },
         date: "9.02.2019"
       }
     ],
