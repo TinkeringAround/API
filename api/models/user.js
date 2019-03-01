@@ -14,20 +14,9 @@ const userSchema = mongoose.Schema({
     status: { type: String, required: true },
     code: { type: String, required: true }
   },
-  activities: {
-    sequences: [
-      {
-        _id: { type: mongoose.SchemaTypes.ObjectId, ref: "Sequence" },
-        status: Object
-      }
-    ],
-    puzzles: [
-      {
-        _id: { type: mongoose.SchemaTypes.ObjectId, ref: "Puzzle" },
-        status: Object
-      }
-    ]
-  }
+  activities: [
+    { type: mongoose.SchemaTypes.ObjectId, ref: "Activity", require: true }
+  ]
 });
 
 module.exports = mongoose.model("User", userSchema);

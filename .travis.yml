@@ -16,6 +16,3 @@ script:
   - docker login --username="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
   - npm run build
   - npm run cluster-update
-
-notifications:
-  slack: adapt-improve-evolve:${SLACK_TOKEN}
