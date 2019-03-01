@@ -16,7 +16,7 @@
     "cluster-info": "kubectl describe --kubeconfig='./deployment/cluster-kubeconfig.yaml' service/myapi",
     "cluster-update": "kubectl replace --kubeconfig='./deployment/cluster-kubeconfig.yaml' --force -f ./deployment/deployment.yaml",
     "cluster-delete": "kubectl delete --kubeconfig='./deployment/cluster-kubeconfig.yaml' -f ./deployment/deployment.yaml",
-    "deploy": "npm run test && npm run build && npm run cluster-delete && npm run cluster-create && "
+    "deploy": "npm test && npm run build && npm run cluster-update"
   },
   "repository": {
     "type": "git",

@@ -133,24 +133,13 @@ exports.signup = (req, res, next) => {
                     max: 999999,
                     integer: true
                   }).toString()
-                }
+                },
+                activities: []
               });
 
               user
                 .save()
                 .then(result => {
-                  console.log(result);
-                  const token = jwt.sign(
-                    {
-                      email: user.email,
-                      userId: user._id
-                    },
-                    process.env.JWT_KEY,
-                    {
-                      expiresIn: "1h"
-                    }
-                  );
-
                   // Generate Email and then respond
                   sgMail.send({
                     to: user.email,
@@ -244,7 +233,7 @@ exports.activateUser = (req, res, next) => {
 };
 
 // users/login
-exports.login = (req, res, nex) => {
+exports.login = (req, res, next) => {
   if (
     !req.body.hasOwnProperty("email") ||
     !req.body.hasOwnProperty("password")
@@ -292,6 +281,9 @@ exports.login = (req, res, nex) => {
               expiresIn: "1h"
             }
           );
+
+          console.log("User", user[0]);
+
           return res.status(200).json({
             message: "Login has been successful.",
             data: { userID: user[0]._id, token: token },
